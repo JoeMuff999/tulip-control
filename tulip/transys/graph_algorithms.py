@@ -53,10 +53,10 @@ def dijkstra_single_source_multiple_targets(
 
     dist = {source: 0}
     visited = set()
-    Q = [(0, source, [])]
+    Q = [(0, 0, source, [])]
 
     while Q:
-        (cost, u, path) = heappop(Q)
+        (cost, tiebreaker, u, path) = heappop(Q)
         if u in visited:
             continue
         visited.add(u)
@@ -64,8 +64,8 @@ def dijkstra_single_source_multiple_targets(
         path_to_u.append(u)
         if u in target_set:
             return (cost, path_to_u)
-
         for transition in graph.transitions.find(u):
+
             v = transition[1]
             if v in visited:
                 continue
@@ -73,7 +73,8 @@ def dijkstra_single_source_multiple_targets(
             new_cost = transition[2][cost_key] + cost
             if not current_cost or new_cost < current_cost:
                 dist[v] = new_cost
-                heappush(Q, (new_cost, v, path_to_u))
+                tiebreaker=id(v)
+                heappush(Q, (new_cost, tiebreaker, v, path_to_u))
 
     return (float("inf"), ())
 
